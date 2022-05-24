@@ -1,24 +1,36 @@
 package com.revature.hai_app.daos;
 
 import com.revature.hai_app.models.User;
+import com.revature.hai_app.util.database.DatabaseConnection;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class userDAO implements CrudeDAO<User>{
-    String path = "src/main/resources/database/userdata.txt";
+public class userDAO implements CrudeDAO<User> {
+    Connection con = DatabaseConnection.getCon();
 
     @Override
     public void save(User obj) {
         try {
-            File file = new File(path);
-            FileWriter fw = new FileWriter(file, true);
-            fw.write(obj.toFileString());
-            fw.close();
-        } catch (IOException e){
-            throw new RuntimeException("No such file exists in the directory");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO users (id, username, password, storecredits, address, state, role, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?");
+            ps.setString(1, obj.getId());
+            ps.setString(2, obj.getUsername());
+            ps.setString(3, obj.getPassword());
+            ps.setString(4, String.valueOf(obj.getStorecredits()));
+            ps.setString(5, obj.getAddress());
+            ps.setString(6, obj.getState());
+            ps.setString(7, obj.getRole());
+            ps.setString(8, obj.getEmail());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("An error occurred when trying to save to database.");
         }
+
     }
 
     @Override
@@ -38,62 +50,44 @@ public class userDAO implements CrudeDAO<User>{
 
     @Override
     public List<User> getAll() {
-        return null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                User user = new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getString("id"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("state"),
+                        Integer.parseInt(rs.getString("storecredits"))
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+        }
+        return users;
     }
 
-    public List<String> getAllUsernames(){
+    public List<String> getAllUsernames() {
         List<String> usernames = new ArrayList();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(path));
+            PreparedStatement ps = con.prepareStatement("Select username FROM users");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
 
-            String userData;
-            while((userData = br.readLine()) != null) {
-            String[] userArr = userData.split("/"); // id. username, password, role
-            String id = userArr[0];
-            String username = userArr[1];
-            String password = userArr[2];
-            String role = userArr[3];
-
-            usernames.add(username);
+                usernames.add(rs.getString("username"));
             }
-        } catch(FileNotFoundException e){
-            throw new RuntimeException("An error occurred when trying to access the file.");
-        } catch (IOException e){
-            throw new RuntimeException("An error occurred when trying to acess the file information.");
+        } catch (SQLException e) {
+            throw new RuntimeException("n error occurred when tyring to get data from to the database.");
         }
         return usernames;
-    }
-
-    public User getUserbyUsernameAndPassword(String name, String pass){
-        User user = new User();
-
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(path));
-            String userData = ""; //to store userdata
-            while ((userData = br.readLine()) != null){
-                String[] userArr = userData.split("/"); // [id, username, password, role]
-                String id = userArr[0];
-                String username = userArr[1];
-                String password = userArr[2];
-                String email = userArr[3];
-                String role = userArr[4];
-
-                if (name.equals(username)){
-                    user.setId(id);
-                    user.setUsername(username);
-                    user.setRole(role);
-
-                    if (pass.equals(password)) user.setPassword(password);
-                    else break;
-                }  else if (pass.equals(password)) user.setPassword(password);
-            }
-
-        } catch (FileNotFoundException e){
-            throw new RuntimeException("The file you're trying to access does not exist");
-        } catch (IOException e){
-            throw new RuntimeException("An error occurred when trying to access file information");
-        }
-        return user;
     }
 }

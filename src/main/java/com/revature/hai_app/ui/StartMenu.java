@@ -4,9 +4,7 @@ package com.revature.hai_app.ui;
 // Should have options for user to direct application to. e.g Log In/ Create Account / Exit
 import com.revature.hai_app.models.User;
 import com.revature.hai_app.services.UserService;
-import com.revature.hai_app.util.custom_exceptions.InvalidEmailException;
-import com.revature.hai_app.util.custom_exceptions.InvalidPasswordException;
-import com.revature.hai_app.util.custom_exceptions.InvalidUserException;
+import com.revature.hai_app.util.custom_exceptions.*;
 
 import java.util.*;
 
@@ -16,6 +14,8 @@ public class StartMenu implements MenuTemplate {
     String username;
     String password;
     String email;
+    String address;
+    String state;
     //    Dependency injection
     private final UserService userService;
 
@@ -88,9 +88,13 @@ public class StartMenu implements MenuTemplate {
         completeExit:
         {
             while (true) {
+                address = createAddress();
+                state = createState();
+                email = createEmail();
                 username = createUserName();
                 password = createPassword();
-                email = createEmail();
+
+
                 System.out.print("Confirm password: "); // Confirm Password
                 String confirmPassword = scanner.nextLine();
 
@@ -114,7 +118,7 @@ public class StartMenu implements MenuTemplate {
 
                     switch (input) {
                         case "y":
-                            User user = new User(UUID.randomUUID().toString(), username, password, "DEFAULT", email);
+                            User user = new User(username, password, "DEFAULT", UUID.randomUUID().toString(), email, address, state, 0);
 
                             userService.register(user);
                             login();
@@ -176,6 +180,34 @@ public class StartMenu implements MenuTemplate {
             }
         }
         return email;
+    }
+
+    private String createAddress(){
+        while(true){
+            System.out.print("Address: ");
+            address = scanner.nextLine();
+
+            try{
+                if (userService.isValidAddress(address)) break;
+            } catch (InvalidAddressException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return address;
+    }
+
+    private String createState(){
+        while(true){
+            System.out.print("State: ");
+            state = scanner.nextLine();
+
+            try{
+                if (userService.isValidState(state)) break;
+            } catch (InvalidStateException e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return state;
     }
     }
 

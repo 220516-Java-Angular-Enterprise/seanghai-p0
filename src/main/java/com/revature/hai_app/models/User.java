@@ -1,7 +1,5 @@
 package com.revature.hai_app.models;
 
-import java.util.*;
-
 
 public class User {
     private String username;
@@ -9,30 +7,35 @@ public class User {
     private String role;
     private String id;
     private String email;
+    private String address;
+    private String state;
+    private int storecredits;
+
 
 //    Constructor
     public User() {
     }
 
-    public User(String id, String username, String password, String role, String email) {
-        this.id = id;
+    public User(String username, String password, String role, String id, String email, String address, String state, int storecredits) {
         this.username = username;
         this.password = password;
-        this.email = email;
         this.role = role;
+        this.id = id;
+        this.email = email;
+        this.address = address;
+        this.state = state;
+        this.storecredits = storecredits;
     }
 
- // Setters & Getters
+// Setters & Getters
+
 
     public String getUsername() {
         return username;
     }
+
     public String getPassword() {
         return password;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public String getRole() {
@@ -43,8 +46,24 @@ public class User {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public int getStorecredits() {
+        return storecredits;
+    }
+
+    public void setStorecredits(int storecredits) {
+        this.storecredits = storecredits;
     }
 
     public void setUsername(String username) {
@@ -59,24 +78,34 @@ public class User {
         this.role = role;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String toFileString(){
-        return id + "/" + username + "/" + password + "/" + email + "/" + role + "\n";
+    public void setAddress(String address) {
+        this.address = address;
     }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+
 
     @Override
     public String toString() {
         return "User{" +
+                ", id='" + id + '\'' +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
-                ", id='" + id + '\'' +
                 ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", state='" + state + '\'' +
                 '}';
     }
-
-
 }

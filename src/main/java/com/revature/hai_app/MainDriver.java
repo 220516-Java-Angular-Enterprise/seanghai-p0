@@ -4,6 +4,7 @@ package com.revature.hai_app;
 import com.revature.hai_app.daos.userDAO;
 import com.revature.hai_app.services.UserService;
 import com.revature.hai_app.ui.StartMenu;
+import com.revature.hai_app.util.database.DatabaseConnection;
 
 // Main purpose is to start application
 public class MainDriver {
@@ -12,6 +13,8 @@ public class MainDriver {
         UserService userService = new UserService(userDAO);
         StartMenu start = new StartMenu(userService);
 
-        start.start();
+//        start.start();
+        System.out.println(DatabaseConnection.getCon());
+
     }
 }

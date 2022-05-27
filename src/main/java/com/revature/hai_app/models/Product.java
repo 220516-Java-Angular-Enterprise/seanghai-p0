@@ -7,18 +7,15 @@ public class Product {
     private String description;
     private String rarity;
     private int price;
-    private int prod_count;
-    private String store_id;
 
-    public Product(String id, String name, String classRec, String description, String rarity, int price, int prod_count, String store_id) {
+
+    public Product(String id, String name, String classRec, String description, String rarity, int price) {
         this.id = id;
         this.name = name;
         this.classRec = classRec;
         this.description = description;
         this.rarity = rarity;
         this.price = price;
-        this.prod_count = prod_count;
-        this.store_id = store_id;
     }
 
     @Override
@@ -29,9 +26,7 @@ public class Product {
                 ", classRec='" + classRec + '\'' +
                 ", description='" + description + '\'' +
                 ", rarity='" + rarity + '\'' +
-                ", price=" + price +
-                ", prod_count=" + prod_count +
-                ", store_id='" + store_id + '\'' +
+                ", price=" + price + '\'' +
                 '}';
     }
 
@@ -86,19 +81,6 @@ public class Product {
         this.price = price;
     }
 
-    public int getProd_count() {
-        return prod_count;
-    }
 
-    public void setProd_count(int prod_count) {
-        this.prod_count = prod_count;
-    }
 
-    public String getStore_id() {
-        return store_id;
-    }
-
-    public void setStore_id(String store_id) {
-        this.store_id = store_id;
-    }
 }

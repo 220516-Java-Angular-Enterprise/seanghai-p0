@@ -13,8 +13,8 @@ public class MainDriver {
         UserService userService = new UserService(userDAO);
         StartMenu start = new StartMenu(userService);
 
-//        start.start();
-        System.out.println(DatabaseConnection.getCon());
 
+        start.start();
+//        System.out.println(DatabaseConnection.getCon());
     }
 }

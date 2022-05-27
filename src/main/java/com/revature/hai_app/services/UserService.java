@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public boolean isValidAddress(String address){
-        if (address.matches("\\d{1,5}\\s\\w.\\s(\\b\\w*\\b\\s){1,2}\\w*\\.")) {
+        if (address.matches("^(\\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\\d*)?$")) {
             return true;
         } else {
             throw new InvalidAddressException("Invalid address entered.");
@@ -94,6 +94,10 @@ public class UserService {
         }
     }
 
+    public void update(User user){
+        userDAO.update(user);
+
+    }
 
     }
 

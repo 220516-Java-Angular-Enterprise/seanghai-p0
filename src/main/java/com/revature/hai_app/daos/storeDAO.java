@@ -15,12 +15,32 @@ public class storeDAO implements CrudeDAO<Store>{
     Connection con = DatabaseConnection.getCon();
     @Override
     public void save(Store obj) {
-
+    try {
+        PreparedStatement ps = con.prepareStatement("INSERT into stores " +
+                "(id, location) VALUES " +
+                "(?, ?)");
+            ps.setString(1, obj.getId());
+            ps.setString(2, obj.getLocation());
+            ps.executeUpdate();
+    } catch (SQLException e){
+        System.out.println("SQLException: " + e.getMessage());
+        System.out.println("SQLState: " + e.getSQLState());
+        System.out.println("VendorError: " + e.getErrorCode());
+    }
     }
 
     @Override
     public void update(Store Obj) {
-
+    try {
+        PreparedStatement ps = con.prepareStatement("UPDATE users SET " +
+                "location = '" + Obj.getLocation() + "'," +
+                "WHERE id = '" + Obj.getId() + "';");
+                ps.executeUpdate();
+    } catch (SQLException e){
+        System.out.println("SQLException: " + e.getMessage());
+        System.out.println("SQLState: " + e.getSQLState());
+        System.out.println("VendorError: " + e.getErrorCode());
+    }
     }
 
     @Override
@@ -32,19 +52,19 @@ public class storeDAO implements CrudeDAO<Store>{
     public Store getByID(String id) {
         Store stor = new Store();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores WHERE id='"+id+"'");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores WHERE id='"+id+"';");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 Store sto = new Store(
                         rs.getString("id"),
-                        rs.getString("location"),
-                        rs.getString("product_id"),
-                        rs.getString("order_id")
+                        rs.getString("location")
                 );
                 stor = sto;
             }
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when trying to save to database.");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
         }
         return stor;
     }
@@ -54,21 +74,20 @@ public class storeDAO implements CrudeDAO<Store>{
         List<Store> stores = new ArrayList<>();
 
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores;");
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
                 Store store = new Store(
                         rs.getString("id"),
-                        rs.getString("location"),
-                        rs.getString("product_id"),
-                        rs.getString("order_id")
-
+                        rs.getString("location")
                 );
                 stores.add(store);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("An error occurred when tyring to get data from to the database.");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
         }
         return stores;
     }

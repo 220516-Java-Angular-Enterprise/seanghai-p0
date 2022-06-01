@@ -1,5 +1,6 @@
 package com.revature.hai_app.daos;
 
+import com.revature.hai_app.models.Orderinstance;
 import com.revature.hai_app.models.Product;
 import com.revature.hai_app.util.database.DatabaseConnection;
 
@@ -50,10 +51,33 @@ public class productDAO implements CrudeDAO<Product>{
         }
     }
 
+    public List<Product> getByRarity(String rarity){
+        List<Product> productList = new ArrayList<>();
+        try{
+            PreparedStatement ps = con.prepareStatement("SELECT * from products WHERE rarity='"+rarity+"';");
+            ResultSet rs =  ps.executeQuery();
+            while(rs.next()){
+                Product item = new Product(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("classrec"),
+                        rs.getString("description"),
+                        rs.getString("rarity"),
+                        rs.getInt("price")
+                );
+                productList.add(item);
+            }
+        } catch(SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
+        return productList;
+    }
     @Override
     public void delete(String id) {
     try {
-        PreparedStatement ps = con.prepareStatement("DELETE FROM products WHERE id='"+id+"';");
+        PreparedStatement ps = con.prepareStatement("DELETE FROM products WHERE id= '"+id+"';");
         ps.executeUpdate();
     } catch (SQLException e){
         System.out.println("SQLException: " + e.getMessage());
@@ -110,5 +134,29 @@ public class productDAO implements CrudeDAO<Product>{
            System.out.println("VendorError: " + e.getErrorCode());
        }
        return products;
+    }
+
+    public List<Product> searchProductsByName(String search){
+        List<Product> products = new ArrayList<>();
+        try{
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM products WHERE name LIKE '%"+search+"%';");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Product prod = new Product(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("classrec"),
+                        rs.getString("description"),
+                        rs.getString("rarity"),
+                        rs.getInt("price")
+                );
+                products.add(prod);
+            }
+        } catch(SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
+        return products;
     }
 }

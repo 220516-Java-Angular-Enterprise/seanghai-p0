@@ -2,6 +2,7 @@ package com.revature.hai_app;
 
 
 import com.revature.hai_app.daos.userDAO;
+import com.revature.hai_app.services.FontService;
 import com.revature.hai_app.services.UserService;
 import com.revature.hai_app.ui.StartMenu;
 import com.revature.hai_app.util.database.DatabaseConnection;
@@ -12,9 +13,10 @@ public class MainDriver {
         userDAO userDAO = new userDAO();
         UserService userService = new UserService(userDAO);
         StartMenu start = new StartMenu(userService);
-
+        FontService font = new FontService();
 
         start.start();
 //        System.out.println(DatabaseConnection.getCon());
+
     }
 }

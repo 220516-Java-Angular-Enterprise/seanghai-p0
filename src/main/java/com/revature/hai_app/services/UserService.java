@@ -2,18 +2,14 @@ package com.revature.hai_app.services;
 
 import com.revature.hai_app.daos.userDAO;
 import com.revature.hai_app.models.User;
-import com.revature.hai_app.util.custom_exceptions.InvalidAddressException;
-import com.revature.hai_app.util.custom_exceptions.InvalidEmailException;
-import com.revature.hai_app.util.custom_exceptions.InvalidPasswordException;
-import com.revature.hai_app.util.custom_exceptions.InvalidUserException;
-import sun.plugin.dom.exception.InvalidStateException;
+import com.revature.hai_app.util.custom_exceptions.*;
 
 import java.util.List;
 
 public class UserService {
     //Injecting
     private final userDAO userDAO;
-    public UserService(userDAO userDAO) { this.userDAO = userDAO;};
+    public UserService(userDAO userDAO) { this.userDAO = userDAO;}
     public User login(String username, String password){
         User user = new User();
         List<User> users = userDAO.getAll();
@@ -34,7 +30,6 @@ public class UserService {
             }
             if (u.getPassword().equals(password)){
                 user.setPassword(u.getPassword());
-                break;
             }
         }
         return isValidCredentials(user);
@@ -82,10 +77,21 @@ public class UserService {
         if (address.matches("^(\\d+) ?([A-Za-z](?= ))? (.*?) ([^ ]+?) ?((?<= )APT)? ?((?<= )\\d*)?$")) {
             return true;
         } else {
-            throw new InvalidAddressException("Invalid address entered.");
+            throw new InvalidAddressException("Invalid address entered. Example Format: 1111 Some Ln or 1111 Some Lane St");
         }
     }
 
+    public boolean isNotDuplicateEmail(String email){
+        List<String> emails = userDAO.getAllEmails();
+        if (emails.contains(email)) throw new InvalidEmailException("Email already exists.");
+        return true;
+    }
+
+    public boolean isNotDuplicateUsername(String username){
+        List<String> usernames = userDAO.getAllUsernames();
+        if (usernames.contains(username)) throw new InvalidUserException("Email already exists.");
+        return true;
+    }
     public boolean isValidState(String state){
         if (state.matches("^((A[ELKSZR])|(C[AOT])|(D[EC])|(F[ML])|(G[AU])|(HI)|(I[DLNA])|(K[SY])|(LA)|(M[EHDAINSOT])|(N[EVHJMYCD])|(MP)|(O[HKR])|(P[WAR])|(RI)|(S[CD])|(T[NX])|(UT)|(V[TIA])|(W[AVIY]))$")) {
             return true;
@@ -96,7 +102,15 @@ public class UserService {
 
     public void update(User user){
         userDAO.update(user);
+    }
 
+    public User getUserByID(String id){
+        return userDAO.getByID(id);
+    }
+
+    public List<User> searchUsersByName(String search){
+        List<User> users = userDAO.searchUsersByUsername(search);
+        return users;
     }
 
     }

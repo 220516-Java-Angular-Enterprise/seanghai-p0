@@ -16,6 +16,14 @@ public class Cart {
         this.cart_prodprice_total = cart_prodprice_total;
         this.checked_out = checked_out;
     }
+
+    public Cart(String order_id, String cart_id, String product_id, boolean checked_out) {
+        this.order_id = order_id;
+        this.product_id = product_id;
+        this.cart_id = cart_id;
+        this.checked_out = checked_out;
+    }
+
     public Cart(){};
 
     @Override

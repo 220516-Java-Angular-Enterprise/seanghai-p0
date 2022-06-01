@@ -52,7 +52,7 @@ public class storeDAO implements CrudeDAO<Store>{
     public Store getByID(String id) {
         Store stor = new Store();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores WHERE id='"+id+"';");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores WHERE id= '"+id+"';");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 Store sto = new Store(
@@ -69,6 +69,25 @@ public class storeDAO implements CrudeDAO<Store>{
         return stor;
     }
 
+    public Store getByLocation(String location){
+        Store stor = new Store();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM stores WHERE location= '"+location+"';");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Store sto = new Store(
+                        rs.getString("id"),
+                        rs.getString("location")
+                );
+                stor = sto;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
+        return stor;
+    }
     @Override
     public List<Store> getAll() {
         List<Store> stores = new ArrayList<>();

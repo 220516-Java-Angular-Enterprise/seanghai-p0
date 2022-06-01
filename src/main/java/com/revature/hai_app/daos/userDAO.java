@@ -83,7 +83,7 @@ public class userDAO implements CrudeDAO<User> {
                         rs.getString("state"),
                         rs.getInt("storecredits")
                 );
-                user = us;
+                us = user;
             }
         } catch (SQLException e){
             System.out.println("SQLException: " + e.getMessage());
@@ -122,6 +122,31 @@ public class userDAO implements CrudeDAO<User> {
         return users;
     }
 
+    public List<User> searchUsersByUsername(String search){
+        List<User> users = new ArrayList<>();
+        try{
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username LIKE '%"+search+"%';");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                User user = new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getString("id"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("state"),
+                        rs.getInt("storecredits")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
+        return users;
+    }
     public List<String> getAllUsernames() {
         List<String> usernames = new ArrayList();
 
@@ -136,5 +161,19 @@ public class userDAO implements CrudeDAO<User> {
             throw new RuntimeException("n error occurred when tyring to get data from to the database.");
         }
         return usernames;
+    }
+
+    public List<String>  getAllEmails(){
+        List<String> emails = new ArrayList<>();
+        try {
+            PreparedStatement ps = con.prepareStatement("Select email FROM users");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                emails.add(rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("n error occurred when tyring to get data from to the database.");
+        }
+        return emails;
     }
 }

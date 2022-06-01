@@ -34,7 +34,7 @@ public class ordersDAO implements CrudeDAO<Orders>{
     @Override
     public void update(Orders Obj) {
         try{
-            PreparedStatement ps = con.prepareStatement("UPDATE products SET " +
+            PreparedStatement ps = con.prepareStatement("UPDATE orders SET " +
                     "ord_date = '" + Obj.getDate() + "'," +
                     "price_total = '" + Obj.getPrice_total() + "'," +
                     "product_qty = '" + Obj.getProduct_qty() + "'," +
@@ -48,10 +48,11 @@ public class ordersDAO implements CrudeDAO<Orders>{
         }
     }
 
+
     @Override
     public void delete(String id) {
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM orders WHERE id ='" + id + "';");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM orders WHERE id ='" + id + "'");
             ps.executeUpdate();
         } catch (SQLException e){
             System.out.println("SQLException: " + e.getMessage());
@@ -69,12 +70,12 @@ public class ordersDAO implements CrudeDAO<Orders>{
             while(rs.next()){
                 Orders order = new Orders(
                         rs.getString("id"),
-                        rs.getString("date"),
+                        rs.getString("ord_date"),
                         rs.getInt("price_total"),
                         rs.getInt("product_qty"),
                         rs.getString("user_id")
                 );
-                order = ord;
+                ord = order;
             }
         } catch (SQLException e){
             System.out.println("SQLException: " + e.getMessage());
@@ -87,12 +88,12 @@ public class ordersDAO implements CrudeDAO<Orders>{
     public List<Orders> getAllByUserId(String id){
         List<Orders> orders = new ArrayList<>();
         try{
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM orders WHERE user_id='"+id+"';");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM orders WHERE user_id='"+id+"' AND product_qty > 0;");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Orders order = new Orders(
                         rs.getString("id"),
-                        rs.getString("date"),
+                        rs.getString("ord_date"),
                         rs.getInt("price_total"),
                         rs.getInt("product_qty"),
                         rs.getString("user_id")
